@@ -30,6 +30,16 @@ function searchUser(query) {
    })
 }
 
+function debounce(callback, delay) {
+    let timerId;
+    return function(...args) {
+        clearTimeout(timerId);
+        timerId = setTimeout(() => {
+            callback.apply(this, args);
+        }, delay)
+    }
+}
+
 /**
  * --------------------------------------------------------------------------
  * On Dom Load Event
@@ -42,9 +52,17 @@ $(document).ready(function() {
         imagePreview(this, '.profile-img-preview');
     });
 
+    // Search action on keyup
+    const debouncedSearch = debounce(function() {
+        const value = $('.user_search').val();
+        searchUser(value);
+    }, 500);
+
     $('.user_search').on('keyup', function() {
         let query = $(this).val();
-        searchUser(query);
+        if(query.length > 0) {
+        debouncedSearch();
+        }
     })
 });
 
