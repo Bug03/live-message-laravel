@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class UserProfileController extends Controller
 {
     use FileUploadTrait;
-    function update(UserProfileUpdateRequest $request) {
+    public function update(UserProfileUpdateRequest $request) {
         $avatarPath = $this->uploadFile($request, 'avatar');
 
         $user = Auth::user();

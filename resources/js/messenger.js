@@ -4,6 +4,8 @@
  * --------------------------------------------------------------------------
  */
 
+
+
 function imagePreview(input, selector) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -12,19 +14,20 @@ function imagePreview(input, selector) {
         };
         reader.readAsDataURL(input.files[0]);
     }
-    // if (input.files) {
-    //     // Duyệt qua từng file đã chọn
-    //     for (let i = 0; i < input.files.length; i++) {
-    //         // Lấy file hiện tại
-    //         let file = input.files[i];
+}
 
-    //         // In thông tin của file
-    //         console.log("File name: " + file.name);
-    //         console.log("File size: " + file.size + " bytes");
-    //         console.log("File type: " + file.type);
-    //         console.log("Last modified: " + file.lastModifiedDate);
-    //     }
-    // }
+function searchUser(query) {
+   $.ajax({
+        method: 'GET',
+        url: 'messenger/search',
+        data: { query: query },
+        success: function(data) {
+            $('.user_search_list_result').html(data.records);
+        },
+        error: function(xhr, status, error) {
+
+        },
+   })
 }
 
 /**
@@ -38,6 +41,13 @@ $(document).ready(function() {
     $('#select_file').change(function() {
         imagePreview(this, '.profile-img-preview');
     });
-})
+
+    $('.user_search').on('keyup', function() {
+        let query = $(this).val();
+        searchUser(query);
+    })
+});
+
+
 
 
