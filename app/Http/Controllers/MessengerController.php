@@ -15,7 +15,8 @@ class MessengerController extends Controller
     }
 
     public function search(Request $request)
-    {   $getRecords = null;
+    {
+        $getRecords = null;
         $input = $request['query'];
         $records = User::where('id', '!=', Auth::user()->id)
             ->where(function ($query) use ($input) {
@@ -33,6 +34,15 @@ class MessengerController extends Controller
         return response()->json([
             'records' => $getRecords,
             'last_page' => $records->lastPage(),
+        ]);
+    }
+
+    public function fetchIdInfo(Request $request)
+    {
+        $user = User::where('id', $request->id)->first();
+        
+        return response()->json([
+            'user' => $user,
         ]);
     }
 }
