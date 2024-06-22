@@ -24,6 +24,9 @@ class MessengerController extends Controller
                 })
             ->paginate(10);
 
+        if($records->total() < 1) {
+            $getRecords .="<p class='text-center'>Nothing to show</p>";
+        }
         foreach($records as $record) {
             $getRecords .= view('messenger.components.search-item', compact('record'))->render();
         }
