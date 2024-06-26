@@ -1,3 +1,19 @@
+
+/**
+ * --------------------------------------------------------------------------
+ * Global Variables
+ * --------------------------------------------------------------------------
+ */
+var temporaryMsgId = 0;
+
+const messageForm = $(".message-form"),
+    messageInput = $(".message-input"),
+    messageBoxContainer = $(".wsus__chat_area_body"),
+    csrf_token = $('meta[name="csrf_token"]').attr("content");
+
+const getMessengerId = () => $("meta[name=id]").attr("content");
+const setMessengerId = (id) => $("meta[name=id]").attr("content",id);
+
 /**
  * --------------------------------------------------------------------------
  * Resuable Messenger Component
@@ -125,6 +141,88 @@ function IDinfo(id) {
     })
 }
 
+/**
+ * --------------------------------------------------------------------------
+ * Send Message
+ * --------------------------------------------------------------------------
+ */
+
+function sendMessage() {
+    temporaryMsgId += 1;
+    let tempID = `temp_${temporaryMsgId}`;
+    let hasAttachment = !!$('.attachment-input').val();
+    const inputValue = messageInput.val();
+
+    if (inputValue.length > 0 || hasAttachment) {
+        const formData = new FormData($(".message-form")[0]);
+        formData.append("id", getMessengerId());
+        formData.append("temporaryMsgId", tempID);
+        formData.append("_token", csrf_token);
+
+        $.ajax({
+            method: "POST",
+            url: "/messenger/send-message",
+            data: formData,
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                if(hasAttachment){
+                    messageBoxContainer.append(sendTempMessageCard(inputValue, tempID, true));
+                }else {
+                    messageBoxContainer.append(sendTempMessageCard(inputValue, tempID));
+                }
+
+                messageFormReset();
+            },
+            success: function (data) {
+                const tempMsgCardElement = messageBoxContainer.find(`.message-card[data-id=${data.temporaryMsgId}]`);
+                tempMsgCardElement.before(data.message);
+                tempMsgCardElement.remove();
+            },
+            error: function (xhr) {
+
+            }
+        })
+    }
+}
+
+function sendTempMessageCard(message, tempId, attachment = false) {
+    if (attachment) {
+        return `
+        <div class="wsus__single_chat_area message-card" data-id="${tempId}">
+            <div class="wsus__single_chat chat_right">
+                <div class="pre_loader">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                ${message.length > 0 ? `<p class="messages">${message}</p>` : ''}
+
+                <span class="clock"><i class="fas fa-clock"></i> now</span>
+            </div>
+        </div>
+        `
+    } else {
+        return `
+        <div class="wsus__single_chat_area message-card" data-id="${tempId}">
+            <div class="wsus__single_chat chat_right">
+                <p class="messages">${message}</p>
+                <span class="clock"><i class="fas fa-clock"></i> now</span>
+            </div>
+        </div>
+        `
+    }
+
+}
+
+// cancel selected attachment
+function messageFormReset() {
+    $('.attachment-block').addClass('d-none');
+    messageForm.trigger("reset");
+    $(".emojionearea-editor").text("");
+}
+
 
 /**
  * --------------------------------------------------------------------------
@@ -159,7 +257,24 @@ $(document).ready(function () {
     // click action for message list item
     $("body").on("click", ".messenger-list-item", function () {
         const dataId  = $(this).attr('data-id');
+        setMessengerId(dataId);
         IDinfo(dataId);
+    });
+
+    //Send message
+    $(".message-form").on("submit", function (e) {
+        e.preventDefault();
+        sendMessage();
+    });
+
+    // send attachment
+    $('.attachment-input').change(function () {
+        imagePreview(this, '.attachment-preview');
+        $('.attachment-block').removeClass('d-none');
+    });
+
+    $('.attachment-cancel').on('click', function () {
+        messageFormReset();
     });
 
 
@@ -182,7 +297,6 @@ $(document).ready(function () {
         adjustHeight();
     });
 });
-
 
 
 
