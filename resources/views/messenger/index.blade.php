@@ -45,17 +45,17 @@
 
         <div class="wsus__chat_area_footer">
             <div class="footer_message">
-                <!-- <div class="img">
-                    <img src="images/chat_img.png" alt="User" class="img-fluid">
-                    <span><i class="far fa-times"></i></span>
-                </div> -->
-                <form action="#">
+                <div class="img d-none attachment-block">
+                    <img src="" alt="User" class="img-fluid attachment-preview">
+                    <span class="attachment-cancel"><i class="far fa-times"></i></span>
+                </div>
+                <form action="#" class="message-form" enctype="multipart/form-data">
                     <div class="file">
                         <label for="file"><i class="far fa-plus"></i></label>
-                        <input id="file" type="file" hidden>
+                        <input id="file" type="file" hidden class="attachment-input" name="attachment" accept="image/*">
                     </div>
-                    <textarea id="example1" rows="1" placeholder="Type a message.."></textarea>
-                    <button><i class="fas fa-paper-plane"></i></button>
+                    <textarea id="example1" rows="1" placeholder="Type a message.." name="message" class="message-input"></textarea>
+                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
                 </form>
             </div>
         </div>

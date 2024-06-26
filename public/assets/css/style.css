@@ -746,16 +746,6 @@ button {
     color: var(--colorWhite);
 }
 
-.wsus__single_chat .time {
-    display: block;
-    font-size: 14px;
-    color: var(--paraColor);
-    font-weight: 400;
-    position: absolute;
-    bottom: -20px;
-    left: 0;
-    text-align: left;
-}
 
 .wsus__single_chat .action {
     position: absolute;
@@ -795,7 +785,7 @@ button {
     left: 0;
 }
 
-.wsus__single_chat.chat_right .time {
+.wsus__single_chat.chat_right {
     text-align: right;
     left: auto;
     right: 0;
@@ -1133,6 +1123,29 @@ button {
 
 .spinner-border {
     --bs-spinner-border-width: 2px;
+}
+
+.wsus__single_chat .time,
+.wsus__single_chat .clock {
+    display: block;
+    font-size: 14px;
+    color: var(--paraColor);
+    font-weight: 400;
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    text-align: left;
+}
+
+.wsus__single_chat.chat_right .time,
+.wsus__single_chat.chat_right .clock {
+    text-align: right;
+    left: auto;
+    right: 0;
+}
+
+.wsus__single_chat.chat_right .clock i {
+    font-size: 11px;
 }
 
 /*================================
