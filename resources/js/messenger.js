@@ -1,4 +1,3 @@
-
 /**
  * --------------------------------------------------------------------------
  * Global Variables
@@ -25,8 +24,12 @@ function enableChatBoxLoader() {
 }
 
 function disableChatBoxLoader() {
+    $(".wsus__chat_app").removeClass('show_info');
     $('.wsus__message_paceholder').addClass('d-none');
+    $('.wsus__message_paceholder_blank').addClass('d-none');
+
 }
+
 
 function imagePreview(input, selector) {
     if (input.files && input.files[0]) {
@@ -126,13 +129,15 @@ function IDinfo(id) {
             enableChatBoxLoader();
         },
         success: function (data) {
+            // fetch messages
+            fetchMessages(data.user.id, true);
             $(".messenger-header").find("img").attr('src', data.user.avatar);
             $(".messenger-header").find("h4").text(data.user.name);
             $(".messenger-info-view .user_photo").find("img").attr('src', data.user.avatar);
             $(".messenger-info-view").find(".user_name").text(data.user.name);
             $(".messenger-info-view").find(".user_unique_name").text(data.user.user_name);
             NProgress.done();
-            disableChatBoxLoader();
+
         },
         error: function (xhr, status, error) {
             console.log(xhr);
@@ -223,6 +228,80 @@ function messageFormReset() {
     $(".emojionearea-editor").text("");
 }
 
+/**
+ * --------------------------------------------------------------------------
+ * Fetch messages from database
+ * --------------------------------------------------------------------------
+ */
+
+let messagePage = 1;
+let noMoreMessages = false;
+let messagesLoading = false;
+
+function fetchMessages(id, newFetch = false) {
+    if (newFetch) {
+        messagePage = 1;
+        noMoreMessages = false;
+    }
+    if (!noMoreMessages && !messagesLoading) {
+        $.ajax({
+            method: 'GET',
+            url: '/messenger/fetch-messages',
+            data: {
+                _token: csrf_token,
+                id: id,
+                page: messagePage
+            },
+            beforeSend: function () {
+                messagesLoading = true;
+                let loader = `
+                <div class="text-center messages-loader">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                `
+                messageBoxContainer.prepend(loader);
+            },
+            success: function (data) {
+                messagesLoading = false;
+
+                messageBoxContainer.find('.messages-loader').remove();
+                if(messagePage == 1) {
+                    messageBoxContainer.html(data.messages);
+                    scrollToBottom(messageBoxContainer);
+                }else {
+                    const lastMsg = $(messageBoxContainer).find(".message-card").first();
+                    const curOffset = lastMsg.offset().top - messageBoxContainer.scrollTop();
+
+                    messageBoxContainer.prepend(data.messages);
+                    messageBoxContainer.scrollTop(lastMsg.offset().top - curOffset);
+                }
+                // pagination lock and page increment
+                noMoreMessages = messagePage >= data?.last_page;
+                if (!noMoreMessages) messagePage += 1;
+
+                disableChatBoxLoader();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+    }
+
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * Slide to bottom on action
+ * --------------------------------------------------------------------------
+ */
+function scrollToBottom(container) {
+    $(container).stop().animate({
+        scrollTop: $(container)[0].scrollHeight
+    }, 500);
+}
+
 
 /**
  * --------------------------------------------------------------------------
@@ -276,6 +355,11 @@ $(document).ready(function () {
     $('.attachment-cancel').on('click', function () {
         messageFormReset();
     });
+
+    // message pagination
+    actionOnScroll(".wsus__chat_area_body", function () {
+        fetchMessages(getMessengerId());
+    },true);
 
 
     // custom hight adjustment

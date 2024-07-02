@@ -11,7 +11,7 @@
         @include('messenger.layouts.profile-modal')
     </div>
 
-    @include('messenger.layouts.search-form') 
+    @include('messenger.layouts.search-form')
 
     <div class="wsus__favourite_user">
         <div class="top">favourites</div>
@@ -51,10 +51,10 @@
                     <span class="inactive"></span>
                 </div>
                 <div class="text">
-                    <h5>Hasan Masud</h5>
-                    <p><span>You</span> Hello, How are you?</p>
+                    <h5></h5>
+                    <p><span></span></p>
                 </div>
-                <span class="time">2h ago</span>
+                <span class="time"></span>
             </div>
         </div>
 
