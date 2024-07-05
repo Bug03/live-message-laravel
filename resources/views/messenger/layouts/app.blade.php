@@ -7,6 +7,7 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
     <meta name="id" content="">
     <meta name="csrf_token" content="{{ csrf_token() }}">
+    <meta name="auth_id" content ="{{ auth()->user()->id }}">
     <title>Chatting Application</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}">
