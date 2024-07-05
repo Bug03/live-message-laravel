@@ -30,7 +30,7 @@
 
     <div class="wsus__save_message">
         <div class="top">your space</div>
-        <div class="wsus__save_message_center">
+        <div class="wsus__save_message_center messenger-list-item" data-id="{{auth()->user()->id}}">
             <div class="icon">
                 <i class="far fa-bookmark"></i>
             </div>
@@ -44,18 +44,9 @@
 
     <div class="wsus__user_list_area">
         <div class="top">All Messages</div>
-        <div class="wsus__user_list_area_height">
-            <div class="wsus__user_list_item">
-                <div class="img">
-                    <img src="images/author_img_2.jpg" alt="User" class="img-fluid">
-                    <span class="inactive"></span>
-                </div>
-                <div class="text">
-                    <h5></h5>
-                    <p><span></span></p>
-                </div>
-                <span class="time"></span>
-            </div>
+        <div class="wsus__user_list_area_height messenger-contacts">
+
+
         </div>
 
         <!-- <div class="wsus__user_list_liading">
