@@ -20,7 +20,7 @@
                 <h4></h4>
             </div>
             <div class="header_right">
-                <a href="#" class="favourite"><i class="fas fa-star"></i></a>
+                <a href="" class="favourite"><i class="fas fa-star"></i></a>
                 <a href="#" class="go_home"><i class="fas fa-home"></i></a>
                 <a href="#" class="info"><i class="fas fa-info-circle"></i></a>
             </div>

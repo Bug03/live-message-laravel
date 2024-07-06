@@ -133,6 +133,10 @@ function IDinfo(id) {
         success: function (data) {
             // fetch messages
             fetchMessages(data.user.id, true);
+            data.favorite == 1
+            ? $(".favourite").addClass("active")
+            : $(".favourite").removeClass("active");
+
             $(".messenger-header").find("img").attr('src', data.user.avatar);
             $(".messenger-header").find("h4").text(data.user.name);
             $(".messenger-info-view .user_photo").find("img").attr('src', data.user.avatar);
@@ -370,6 +374,36 @@ function updateContactItem(user_id) {
 
 /**
  * --------------------------------------------------------------------------
+ * Favorite User
+ * --------------------------------------------------------------------------
+ */
+
+function star(user_id) {
+    $(".favourite").toggleClass("active");
+
+    $.ajax({
+        method: 'POST',
+        url: '/messenger/favorite',
+        data: {
+            _token: csrf_token,
+            id: user_id,
+        },
+        success: function (data) {
+            if(data.status == 'added') {
+                notyf.success("Added to favorite list.");
+            }else {
+                notyf.success("Removed from favorite list.");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log(error);
+        }
+    })
+
+}
+
+/**
+ * --------------------------------------------------------------------------
  * Make messages seen
  * --------------------------------------------------------------------------
  */
@@ -420,9 +454,11 @@ function scrollToBottom(container) {
  * --------------------------------------------------------------------------
  */
 
-getContacts();
+
 
 $(document).ready(function () {
+
+    getContacts();
 
     if(window.innerWidth < 768) {
         $("body").on('click', '.messenger-list-item', function() {
@@ -489,6 +525,12 @@ $(document).ready(function () {
     // contact pagination
     actionOnScroll(".messenger-contacts", function () {
         getContacts();
+    });
+
+    // add/remove to favorite
+    $(".favourite").on("click", function (e) {
+        e.preventDefault();
+        star(getMessengerId());
     });
 
     // custom hight adjustment

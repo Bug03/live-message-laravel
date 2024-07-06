@@ -51,7 +51,7 @@
     <!--main/custom js-->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script>
-        const notyf = new Notyf({
+        var notyf = new Notyf({
             duration: 9000,
             position: {
                 x: 'right',
