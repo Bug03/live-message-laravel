@@ -47,9 +47,22 @@ class MessengerController extends Controller
     {
         $user = User::where('id', $request->id)->first();
         $favorite = Favorite::where(['user_id' => Auth::user()->id, 'favorite_id' => $user->id])->exists();
+        $sharedPhotos = Message::where('from_id', Auth::user()->id)
+        ->where('to_id', $request->id)
+        ->whereNotNull('attachment')
+        ->orWhere('from_id', $request->id)->where('to_id', Auth::user()->id)
+        ->whereNotNull('attachment')
+        ->latest()->get();
+
+        $content = '';
+
+        foreach($sharedPhotos as $photo) {
+            $content .= view('messenger.components.gallery-item', compact('photo'))->render();
+        }
         return response()->json([
             'user' => $user,
             'favorite' => $favorite,
+            'sharedPhotos' => $content,
         ]);
     }
 
@@ -107,6 +120,19 @@ class MessengerController extends Controller
 
         return response()->json($response);
     }
+
+    // delete message
+    public function deleteMessage(Request $request) {
+        $message = Message::findorFail($request->message_id);
+        if ($message->from_id == Auth::user()->id) {
+            $message->delete();
+            return response()->json([
+                'id' => $request->message_id
+            ],200);
+        }
+        return;
+    }
+
 
     // fetch contacts from database
     public function fetchContacts(Request $request) {
