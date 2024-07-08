@@ -133,6 +133,17 @@ function IDinfo(id) {
         success: function (data) {
             // fetch messages
             fetchMessages(data.user.id, true);
+
+
+            // load gallery
+            if(data?.sharedPhotos) {
+                $('.nothing_share').addClass('d-none');
+                $(".wsus__chat_info_gallery").html(data.sharedPhotos);
+            } else {
+                $('.nothing_share').removeClass('d-none');
+            }
+            $(".wsus__chat_info_gallery").html(data.sharedPhotos);
+
             data.favorite == 1
             ? $(".favourite").addClass("active")
             : $(".favourite").removeClass("active");
@@ -425,6 +436,45 @@ function makeSeen(status) {
     })
 }
 
+/**
+ * --------------------------------------------------------------------------
+ * Delete message
+ * --------------------------------------------------------------------------
+ */
+function deleteMessage(message_id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+            method: "DELETE",
+            url: "/messenger/delete-message",
+            data: {
+                _token: csrf_token,
+                message_id: message_id
+            },
+            beforeSend: function() {
+                $(`.message-card[data-id="${message_id}"]`).remove();
+
+            },
+            success: function(data) {
+                updateContactItem(getMessengerId());
+            },
+            error: function(xhr, status, error) {
+
+            }
+        })
+        }
+    });
+}
+
+
 
 /**
  * --------------------------------------------------------------------------
@@ -532,6 +582,13 @@ $(document).ready(function () {
         e.preventDefault();
         star(getMessengerId());
     });
+
+    // delete message
+    $("body").on('click', '.dlt-message', function(e) {
+        e.preventDefault();
+        let id = $(this).data('id');
+        deleteMessage(id);
+    })
 
     // custom hight adjustment
     function adjustHeight() {

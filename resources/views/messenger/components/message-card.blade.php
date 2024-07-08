@@ -11,7 +11,10 @@
             <p class="messages">{{ $message->body }}</p>
         @endif
         <span class="time"> {{ timeAgo($message->created_at) }}</span>
-        <a class="action dlt-message" data-id="{{ $message->id }}" href=""><i class="fas fa-trash"></i></a>
+        @if ($message->from_id === auth()->user()->id)
+            <a class="action dlt-message" data-id="{{ $message->id }}" href=""><i class="fas fa-trash"></i></a>
+        @endif)
+
     </div>
 </div>
 @else
@@ -19,7 +22,9 @@
     <div class="wsus__single_chat {{ $message->from_id === auth()->user()->id ? 'chat_right' : '' }}">
         <p class="messages">{{ $message->content}}</p>
         <span class="time"> {{ timeAgo($message->created_at) }}</span>
-        <a class="action" href="#"><i class="fas fa-trash"></i></a>
+        @if ($message->from_id === auth()->user()->id)
+        <a class="action dlt-message" data-id="{{ $message->id }}" href=""><i class="fas fa-trash"></i></a>
+        @endif
     </div>
 </div>
 @endif
