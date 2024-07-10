@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Message as MessageEvent;
 use App\Models\Favorite;
 use App\Models\User;
 use App\Models\Message;
@@ -82,6 +83,9 @@ class MessengerController extends Controller
         $message->content = $request->message;
         if($attachmentPath) $message->attachment = json_encode($attachmentPath);
         $message->save();
+
+        // broadcast event
+        MessageEvent::dispatch($message);
 
         return response()->json([
             'message' => $message->attachment ? $this->messageCard($message,true) : $this->messageCard($message),

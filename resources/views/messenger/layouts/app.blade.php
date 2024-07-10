@@ -8,6 +8,7 @@
     <meta name="id" content="">
     <meta name="csrf_token" content="{{ csrf_token() }}">
     <meta name="auth_id" content ="{{ auth()->user()->id }}">
+    <meta name="url" content="{{ public_path() }}">
     <title>Chatting Application</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}">
@@ -22,7 +23,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <link rel='stylesheet' href='https://unpkg.com/nprogress@0.2.0/nprogress.css'/>
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/messenger.js'])
+    @vite(['resources/js/app.js', 'resources/js/messenger.js', 'resources/css/app.css'])
 </head>
 
 <body>

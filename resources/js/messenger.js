@@ -10,6 +10,7 @@ const messageForm = $(".message-form"),
     messageBoxContainer = $(".wsus__chat_area_body"),
     csrf_token = $('meta[name="csrf_token"]').attr("content"),
     auth_id = $("meta[name=auth_id]").attr("content"),
+    url = $("meta[name=url]").attr("content"),
     messengerContactBox = $(".messenger-contacts");
 
 const getMessengerId = () => $("meta[name=id]").attr("content");
@@ -237,6 +238,29 @@ function sendTempMessageCard(message, tempId, attachment = false) {
         `
     }
 
+}
+
+function receiveMessageCard(e) {
+    if (e.attachment) {
+        return `
+        <div class="wsus__single_chat_area message-card" data-id="${e.id}">
+            <div class="wsus__single_chat">
+            <a class="venobox" data-gall="gallery${e.id}" href="${url + e.attachment}">
+                <img src="${url + e.attachment}" alt="" class="img-fluid w-100">
+            </a>
+                ${e.content != null && e.content.length > 0 ? `<p class="messages">${e.content}</p>` : ''}
+            </div>
+        </div>
+        `
+    } else {
+        return `
+        <div class="wsus__single_chat_area message-card" data-id="${e.id}">
+            <div class="wsus__single_chat">
+                <p class="messages">${e.content}</p>
+            </div>
+        </div>
+        `
+    }
 }
 
 // cancel selected attachment
@@ -497,14 +521,53 @@ function scrollToBottom(container) {
     }, 500);
 }
 
+/**
+ * --------------------------------------------------------------------------
+ * initialize venobox.js
+ * --------------------------------------------------------------------------
+ */
+function initVenobox() {
+    $('.venobox').venobox();
+}
+
+/**
+ * --------------------------------------------------------------------------
+ * Play message sound
+ * --------------------------------------------------------------------------
+ */
+function playNotificationSound() {
+    var url = window.location.origin; // Ensure the base URL is correctly set
+    var file = `${url}/default/message-sound.mp3`;
+    const audio = new Audio(file);
+    // audio.preload = 'auto';
+    audio.play().catch(error => {
+        console.error("Error playing audio:", error);
+    });
+}
+
+
+window.Echo.private("message." + auth_id)
+    .listen('Message', (e) => {
+        console.log(e);
+
+        if(getMessengerId() != e.from_id) {
+            updateContactItem(e.from_id);
+            playNotificationSound();
+        }
+        let message = receiveMessageCard(e);
+        if(getMessengerId() == e.from_id) {
+            messageBoxContainer.append(message);
+            scrollToBottom(messageBoxContainer);
+        }
+    }
+);
+
 
 /**
  * --------------------------------------------------------------------------
  * On Dom Load Event
  * --------------------------------------------------------------------------
  */
-
-
 
 $(document).ready(function () {
 
