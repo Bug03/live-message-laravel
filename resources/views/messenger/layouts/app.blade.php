@@ -10,7 +10,7 @@
     <meta name="auth_id" content ="{{ auth()->user()->id }}">
     <meta name="url" content="{{ public_path() }}">
     <title>Chatting Application</title>
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/chat_list_icon.png') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">

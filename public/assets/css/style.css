@@ -627,12 +627,12 @@ button {
     z-index: 9999;
 }
 
-.wsus__chat_area .wsus__message_paceholder_blank {
+.wsus__message_paceholder_blank {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: #ffff;
-    z-index: 9999;
+    background: #ffff !important;
+    z-index: 11;
 }
 
 .select_a_user {
@@ -760,6 +760,16 @@ button {
     color: var(--colorWhite);
 }
 
+.wsus__single_chat .time {
+    display: block;
+    font-size: 14px;
+    color: var(--paraColor);
+    font-weight: 400;
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    text-align: left;
+}
 
 .wsus__single_chat .action {
     position: absolute;
@@ -797,6 +807,12 @@ button {
 .wsus__single_chat.chat_right .action {
     right: auto;
     left: 0;
+}
+
+.wsus__single_chat.chat_right .time {
+    text-align: right;
+    left: auto;
+    right: 0;
 }
 
 .wsus__single_chat.chat_right {
@@ -898,7 +914,15 @@ button {
     position: relative;
 }
 
+
 .wsus__chat_area_footer form .file {
+    position: absolute;
+    left: 10px;
+    top: 8px;
+}
+
+.wsus__chat_area_footer form .file label {
+    cursor: pointer;
     width: 35px;
     height: 35px;
     background: var(--colorPrimary);
@@ -912,12 +936,9 @@ button {
     -moz-transition: all linear .3s;
     -ms-transition: all linear .3s;
     -o-transition: all linear .3s;
-    position: absolute;
-    left: 10px;
-    top: 8px;
 }
 
-.wsus__chat_area_footer form .file:hover {
+.wsus__chat_area_footer form .file label:hover {
     background: var(--colorBlack);
     color: var(--colorLightBg);
 }
@@ -1063,7 +1084,7 @@ button {
     flex-wrap: wrap;
     gap: 6px;
     padding: 20px 6px;
-    height: 600px;
+    height: 500px;
     overflow-y: scroll;
 }
 
@@ -1164,25 +1185,25 @@ button {
     font-size: 11px;
 }
 
-/*================================
-    Custom css
-================================*/
+
+/** Custom Css*/
+
 .img-fluid.profile-image-preview {
-    width: 135px !important;
     height: 135px !important;
+    width: 135px !important;
     object-fit: cover !important;
 }
 
 .profile-file {
     height: 150px !important;
-    width: 135px !important;
+    width: 150px !important;
 }
 
 .favourite.active {
-    background-color: var(--colorPrimary) !important ;
+    background: var(--colorPrimary) !important;
 }
 
-.favourite.active i {
+.favourite.active i{
     color: var(--colorWhite) !important;
 }
 
