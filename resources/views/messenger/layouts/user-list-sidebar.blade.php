@@ -4,11 +4,24 @@
             <span><img src="images/chat_list_icon.png" alt="Chat" class="img-fluid"></span>
             MESSAGES
         </h3>
-        <span class="setting" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fas fa-user-cog"></i>
-        </span>
+        <div class="d-flex">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
 
-        @include('messenger.layouts.profile-modal')
+                <a href="route('logout')"
+                        onclick="event.preventDefault();
+                this.closest('form').submit();" style="padding-right: 4px">
+                    <span class="setting">
+                        <i class="fas fa-sign-out-alt" style="color: red"></i>
+
+                    </span></a>
+            </form>
+
+            <span class="setting" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="fas fa-user-cog"></i>
+            </span>
+        </div>
+         @include('messenger.layouts.profile-modal')
     </div>
 
     @include('messenger.layouts.search-form')
