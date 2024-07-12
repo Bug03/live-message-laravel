@@ -10,7 +10,7 @@ if(!function_exists('timeAgo')) {
 
         if($seconds <= 60) {
             if($seconds < 1) {
-                return "an seconds ago";
+                return "now";
             }
             return $seconds."s ago";
         } elseif($minutes <= 60) {

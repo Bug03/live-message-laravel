@@ -4,6 +4,7 @@
  * --------------------------------------------------------------------------
  */
 var temporaryMsgId = 0;
+var activeUsersIds = [];
 
 const messageForm = $(".message-form"),
     messageInput = $(".message-input"),
@@ -374,6 +375,8 @@ function getContacts() {
 
                 noMoreContacts = contactsPage >= data?.last_page;
                 if(!noMoreContacts) contactsPage += 1;
+
+                updateUserActiveList();
             },
             error: function (xhr, status, error) {
                 contactsLoading = false;
@@ -397,6 +400,10 @@ function updateContactItem(user_id) {
             success: function (data) {
                 messengerContactBox.find(`.messenger-list-item[data-id=${user_id}]`).remove();
                 messengerContactBox.prepend(data.contact_item);
+
+                if(activeUsersIds.includes(+user_id)) {
+                    userActive(user_id);
+                }
 
                 if (user_id == getMessengerId()) updateSelectedContent(user_id);
             },
@@ -545,7 +552,7 @@ function playNotificationSound() {
     });
 }
 
-
+// Listen message channel for new message
 window.Echo.private("message." + auth_id)
     .listen('Message', (e) => {
         console.log(e);
@@ -561,6 +568,65 @@ window.Echo.private("message." + auth_id)
         }
     }
 );
+
+// Listen online channel for user online status
+window.Echo.join("online")
+    .here((users) => {
+        console.log(users);
+        // set active users
+        setActiveUsersIds(users);
+        console.log(activeUsersIds);
+        $.each(users, function (index, user) {
+            userActive(user.id);
+        });
+    })
+    .joining((user) => {
+        // add user
+        addActiveUser(user.id);
+        userActive(user.id);
+    })
+    .leaving((user) => {
+        // remove user
+        removeActiveUser(user.id);
+        userInactive(user.id);
+    });
+
+
+function updateUserActiveList() {
+    $('.messenger-list-item').each(function(index,value) {
+        let id = $(this).data('id');
+        if(activeUsersIds.includes(id)) userActive(id);
+    });
+}
+
+function userActive(id) {
+    let contactItem = $(`.messenger-list-item[data-id=${id}]`).find('.img').find('span');
+        contactItem.removeClass('inactive');
+        contactItem.addClass('active');
+}
+
+function userInactive(id) {
+    let contactItem = $(`.messenger-list-item[data-id=${id}]`).find('.img').find('span');
+        contactItem.removeClass('active');
+        contactItem.addClass('inactive');
+}
+
+// set active users id to array
+function setActiveUsersIds(users) {
+    $.each(users, function(index, user) {
+        activeUsersIds.push(user.id);
+    });
+}
+
+// add new user to activeUsersIds
+function addActiveUser(id) {
+    activeUsersIds.push(id);
+}
+
+// remove user from activeUsersIds
+function removeActiveUser(id) {
+    activeUsersIds = activeUsersIds.filter(item => item !== id);
+}
 
 
 /**
