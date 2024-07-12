@@ -273,8 +273,9 @@ function receiveMessageCard(e) {
 // cancel selected attachment
 function messageFormReset() {
     $('.attachment-block').addClass('d-none');
-    $(".emojionearea-editor").text("");
-    $("input[type=file]").val(null);
+    messageForm.trigger("reset");
+    var emojiElt = $("#example1").emojioneArea();
+    emojiElt[0].emojioneArea.setText(''); 
 }
 
 /**
