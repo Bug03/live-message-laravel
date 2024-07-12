@@ -6,9 +6,9 @@
     <div class="text">
         <h5>{{ $user->name }}</h5>
         @if ($lastMessage->from_id === auth()->user()->id)
-            <p><span>You:</span> {{ $lastMessage->content }}</p>
+            <p><span>You:</span> {{ truncate($lastMessage->content) }}</p>
         @else
-            <p>{{ $lastMessage->content }}</p>
+            <p>{{ truncate($lastMessage->content) }}</p>
         @endif
     </div>
     @if($unseenCounter >= 1)

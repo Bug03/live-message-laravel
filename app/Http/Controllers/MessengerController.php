@@ -12,6 +12,8 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use function Laravel\Prompts\text;
+
 class MessengerController extends Controller
 {
     use FileUploadTrait;
@@ -110,7 +112,7 @@ class MessengerController extends Controller
         ];
 
         if(count($messages) < 1) {
-            $response['messages'] = "<div class='d-flex justify-content-center align-items-center h-100'><p class='text-center'>Say 'hi' and start messaging</p></div>";
+            $response['messages'] = "<div class='d-flex justify-content-center align-items-center no_messages h-100'><p class='text-center'>Say 'hi' and start messaging</p></div>";
             return response()->json($response);
         }
         // here we have to do little validation
@@ -161,7 +163,7 @@ class MessengerController extends Controller
             }
 
         }else {
-            return "<p>Your contact list is empty</p>";
+            $contacts = "<p class='text-center no_contact'>Your contact list is empty</p>";
         }
 
         return response()->json([

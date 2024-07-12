@@ -197,13 +197,19 @@ function sendMessage() {
                     messageBoxContainer.append(sendTempMessageCard(inputValue, tempID));
                 }
 
+                $('.no_messages').addClass('d-none');
+                scrollToBottom(messageBoxContainer);
                 messageFormReset();
             },
             success: function (data) {
+                makeSeen(true);
+
                 updateContactItem(getMessengerId());
                 const tempMsgCardElement = messageBoxContainer.find(`.message-card[data-id=${data.temporaryMsgId}]`);
                 tempMsgCardElement.before(data.message);
                 tempMsgCardElement.remove();
+
+                initVenobox();
             },
             error: function (xhr) {
 
@@ -246,8 +252,8 @@ function receiveMessageCard(e) {
         return `
         <div class="wsus__single_chat_area message-card" data-id="${e.id}">
             <div class="wsus__single_chat">
-            <a class="venobox" data-gall="gallery${e.id}" href="${url + e.attachment}">
-                <img src="${url + e.attachment}" alt="" class="img-fluid w-100">
+            <a class="venobox" data-gall="gallery${e.id}" href="${e.attachment}">
+                <img src="${e.attachment}" alt="" class="img-fluid w-100">
             </a>
                 ${e.content != null && e.content.length > 0 ? `<p class="messages">${e.content}</p>` : ''}
             </div>
@@ -268,7 +274,8 @@ function receiveMessageCard(e) {
 function messageFormReset() {
     $('.attachment-block').addClass('d-none');
     messageForm.trigger("reset");
-    $(".emojionearea-editor").text("");
+    var emojiElt = $("#example1").emojioneArea();
+    emojiElt[0].emojioneArea.setText(''); 
 }
 
 /**
@@ -326,6 +333,7 @@ function fetchMessages(id, newFetch = false) {
                 noMoreMessages = messagePage >= data?.last_page;
                 if (!noMoreMessages) messagePage += 1;
 
+                initVenobox();
                 disableChatBoxLoader();
             },
             error: function (xhr, status, error) {
@@ -398,6 +406,7 @@ function updateContactItem(user_id) {
             url: '/messenger/update-contact-item',
             data: { user_id: user_id },
             success: function (data) {
+                messengerContactBox.find('.no_contact').remove();
                 messengerContactBox.find(`.messenger-list-item[data-id=${user_id}]`).remove();
                 messengerContactBox.prepend(data.contact_item);
 
@@ -678,6 +687,7 @@ $(document).ready(function () {
         updateSelectedContent(dataId);
         setMessengerId(dataId);
         IDinfo(dataId);
+        messageFormReset();
     });
 
     //Send message

@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Str;
 
 if(!function_exists('timeAgo')) {
     function timeAgo($timestamp) {
@@ -20,5 +21,14 @@ if(!function_exists('timeAgo')) {
         } else {
             return date('j M Y', strtotime($timestamp));
         }
+    }
+}
+
+/** truncate string*/
+
+
+if (!function_exists('truncate')) {
+    function truncate($str, $limit = 18) {
+        return Str::limit($str, $limit, '...');
     }
 }

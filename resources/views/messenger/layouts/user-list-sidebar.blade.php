@@ -1,8 +1,8 @@
 <div class="wsus__user_list">
     <div class="wsus__user_list_header">
         <h3>
-            <span><img src="images/chat_list_icon.png" alt="Chat" class="img-fluid"></span>
-            MESSAGES
+            <span><img src=" {{ asset("assets/images/chat_list_icon.png") }}" alt="Chat" class="img-fluid"></span>
+            MESSENGER
         </h3>
         <div class="d-flex">
             <form method="POST" action="{{ route('logout') }}">
